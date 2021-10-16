@@ -5,7 +5,15 @@
     "rootDir": "src",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "baseUrl": "src",
+    "paths":{
+      "@/*": ["*"],
+      "@tests/*": ["../tests/*"]
+    }
   },
   "include": ["src"]
 }
