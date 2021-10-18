@@ -1,6 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-export PATH="/home/maycon/.nvm/versions/node/v16.11.1/bin:/home/maycon/.pyenv/plugins/pyenv-virtualenvwrapper/shims:/home/maycon/.pyenv/libexec:/home/maycon/.pyenv/plugins/python-build/bin:/home/maycon/.pyenv/plugins/pyenv-virtualenvwrapper/bin:/home/maycon/.pyenv/plugins/pyenv-virtualenvwrapper/shims:/home/maycon/.pyenv/libexec:/home/maycon/.pyenv/plugins/python-build/bin:/home/maycon/.pyenv/plugins/pyenv-virtualenvwrapper/bin:/home/maycon/.pyenv/shims:/home/maycon/.pyenv/bin:/home/maycon/.pyenv/shims:/home/maycon/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+export PATH="/home/maycon/.nvm/versions/node/v14.17.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
 
 npm run test:coverage
