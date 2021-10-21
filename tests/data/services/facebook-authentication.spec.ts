@@ -11,7 +11,7 @@ describe('FacebookAuthenticationService', () => {
   let userAccountRepository: MockProxy<LoadUserAccountRepository & CreateFacebookAccountRepository & UpdateFacebookAccountRepository>
 
   const facebookData = {
-    name: ' any_facebook_name',
+    name: 'any_facebook_name',
     email: 'any_facebook_mail@mail.com',
     facebookId: 'facebook_id'
   }
@@ -48,7 +48,7 @@ describe('FacebookAuthenticationService', () => {
   it('should call userAccountRepository.createFromFacebook when userAccountRepository.load returns undefined', async () => {
     await sut.perform({ token: 'valid_token' })
     expect(userAccountRepository.createFromFacebook).toHaveBeenCalledWith({
-      name: ' any_facebook_name',
+      name: 'any_facebook_name',
       email: 'any_facebook_mail@mail.com',
       facebookId: 'facebook_id'
     })
@@ -63,6 +63,13 @@ describe('FacebookAuthenticationService', () => {
       name: 'valid_name',
       facebookId: 'facebook_id'
     })
+    expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledTimes(1)
+  })
+
+  it('should update account name when userAccountResposotory.load has empty name', async () => {
+    userAccountRepository.load.mockResolvedValueOnce({ id: 'valid_id' })
+    await sut.perform({ token: 'valid_token' })
+    expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledWith({ id: 'valid_id', name: 'any_facebook_name', facebookId: 'facebook_id' })
     expect(userAccountRepository.updateWithFacebook).toHaveBeenCalledTimes(1)
   })
 })
