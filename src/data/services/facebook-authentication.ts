@@ -1,28 +1,24 @@
 import { FacebookAuthentication } from '@/domain/features'
 import { LoadFacebookUserApi } from '@/data/contracts/apis'
 import { AuthenticationError } from '@/domain/errors'
-import { CreateFacebookAccountRepository, LoadUserAccountRepository, UpdateFacebookAccountRepository } from '@/data/contracts/repository'
+import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '@/data/contracts/repository'
 
 export class FacebookAuthenticationService implements FacebookAuthentication {
   constructor (
     private readonly facebookApi: LoadFacebookUserApi,
-    private readonly userAccountRepository: LoadUserAccountRepository & CreateFacebookAccountRepository & UpdateFacebookAccountRepository
+    private readonly userAccountRepository: LoadUserAccountRepository & SaveFacebookAccountRepository
   ) {}
 
   async perform (params: FacebookAuthentication.Params): Promise<FacebookAuthentication.Result> {
     const facebookData = await this.facebookApi.loadUser(params)
     if (facebookData !== undefined) {
       const accountData = await this.userAccountRepository.load({ email: facebookData.email })
-      if (accountData !== undefined) {
-        await this.userAccountRepository.updateWithFacebook({
-          id: accountData.id,
-          facebookId: facebookData.facebookId,
-          name: accountData.name ?? facebookData.name
-        })
-      } else {
-        await this.userAccountRepository.createFromFacebook(facebookData)
-      }
-
+      await this.userAccountRepository.saveWithFacebook({
+        id: accountData?.id,
+        name: accountData?.name ?? facebookData.name,
+        email: facebookData.email,
+        facebookId: facebookData.facebookId
+      })
       return { result: { accessToken: facebookData.facebookId } }
     }
     return { result: new AuthenticationError() }
