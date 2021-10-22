@@ -1,9 +1,13 @@
 import { mock, MockProxy } from 'jest-mock-extended'
+import { mocked } from 'ts-jest/utils'
 
+import { AuthenticationError } from '@/domain/errors'
+import { FacebookAccount } from '@/domain/models'
+import { FacebookAuthenticationService } from '@/data/services'
 import { LoadFacebookUserApi } from '@/data/contracts/apis'
 import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '@/data/contracts/repository'
-import { AuthenticationError } from '@/domain/errors'
-import { FacebookAuthenticationService } from '@/data/services'
+
+jest.mock('@/domain/models/facebook-account')
 
 describe('FacebookAuthenticationService', () => {
   let sut: FacebookAuthenticationService
@@ -45,37 +49,17 @@ describe('FacebookAuthenticationService', () => {
     expect(userAccountRepository.load).toHaveBeenCalledTimes(1)
   })
 
-  it('should create account with facebook data', async () => {
-    await sut.perform({ token: 'valid_token' })
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({
-      name: 'any_facebook_name',
-      email: 'any_facebook_mail@mail.com',
-      facebookId: 'facebook_id'
+  it('should call SaveFacebookAccountRepository with facebookAccount', async () => {
+    const facebookAccountStub = jest.fn().mockImplementation(() => {
+      return {
+        any: 'any'
+      }
     })
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledTimes(1)
-  })
 
-  it('should not update account name', async () => {
-    userAccountRepository.load.mockResolvedValueOnce({ id: 'valid_id', name: 'valid_name' })
+    mocked(FacebookAccount).mockImplementation(facebookAccountStub)
     await sut.perform({ token: 'valid_token' })
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({
-      id: 'valid_id',
-      email: 'any_facebook_mail@mail.com',
-      name: 'valid_name',
-      facebookId: 'facebook_id'
-    })
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledTimes(1)
-  })
 
-  it('should update account name', async () => {
-    userAccountRepository.load.mockResolvedValueOnce({ id: 'valid_id' })
-    await sut.perform({ token: 'valid_token' })
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({
-      id: 'valid_id',
-      name: 'any_facebook_name',
-      email: 'any_facebook_mail@mail.com',
-      facebookId: 'facebook_id'
-    })
+    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({ any: 'any' })
     expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledTimes(1)
   })
 })
