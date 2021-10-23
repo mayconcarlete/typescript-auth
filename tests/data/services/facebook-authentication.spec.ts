@@ -30,7 +30,7 @@ describe('FacebookAuthenticationService', () => {
     userAccountRepository.saveWithFacebook.mockResolvedValue({ id: 'valid_id' })
 
     crypto = mock()
-    crypto.generateToken.mockResolvedValueOnce('any_generated_token')
+    crypto.generateToken.mockResolvedValue('any_generated_token')
 
     sut = new FacebookAuthenticationService(facebookApi, userAccountRepository, crypto)
   })
@@ -72,5 +72,35 @@ describe('FacebookAuthenticationService', () => {
   it('should return an access token on success', async () => {
     const authResult = await sut.perform({ token: 'valid_token' })
     expect(authResult).toEqual({ result: new AccessToken('any_generated_token') })
+  })
+
+  it('should rethrow if LoadFacebookUserApi throws', async () => {
+    facebookApi.loadUser.mockRejectedValueOnce(new Error('facebook_error'))
+    const promise = sut.perform({ token: 'valid_token' })
+    await expect(promise).rejects.toThrow(new Error('facebook_error'))
+  })
+
+  it('should rethrow if LoadUserAccountRepository throws', async () => {
+    userAccountRepository.load.mockRejectedValueOnce(new Error('load_error'))
+    const promise = sut.perform({ token: 'valid_token' })
+    await expect(promise).rejects.toThrow(new Error('load_error'))
+  })
+
+  it('should rethrow if LoadUserAccountRepository throws', async () => {
+    userAccountRepository.saveWithFacebook.mockRejectedValueOnce(new Error('save_error'))
+    const promise = sut.perform({ token: 'valid_token' })
+    await expect(promise).rejects.toThrow(new Error('save_error'))
+  })
+
+  it('should rethrow if SaveFacebookAccountRepository throws', async () => {
+    userAccountRepository.saveWithFacebook.mockRejectedValueOnce(new Error('save_error'))
+    const promise = sut.perform({ token: 'valid_token' })
+    await expect(promise).rejects.toThrow(new Error('save_error'))
+  })
+
+  it('should rethrow if TokenGenerator throws', async () => {
+    crypto.generateToken.mockRejectedValueOnce(new Error('token_error'))
+    const promise = sut.perform({ token: 'valid_token' })
+    await expect(promise).rejects.toThrow(new Error('token_error'))
   })
 })
