@@ -25,7 +25,7 @@ export class FacebookApi implements LoadFacebookUserApi {
         input_token: params.token
       }
     })
-    await this.httpClient.get({
+    const facebookUserInfo = await this.httpClient.get({
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       url: `${this.baseUrl}/${debugToken.data.user_id}/`,
       params: {
@@ -33,12 +33,10 @@ export class FacebookApi implements LoadFacebookUserApi {
         access_token: appToken.access_token
       }
     })
-    return new Promise((resolve, reject) => {
-      resolve({
-        email: 'valid_facebook_mail@mail.com',
-        facebookId: 'valid_facebook_id',
-        name: 'valid_facebook_name'
-      })
-    })
+    return {
+      name: facebookUserInfo.name,
+      email: facebookUserInfo.email,
+      facebookId: facebookUserInfo.id
+    }
   }
 }
