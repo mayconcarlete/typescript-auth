@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev":"ts-node-dev --respawn src/index.ts",
+    "dev2":"ts-node-dev --respawn src/index2.ts",
     "build": "rimraf dist && npx tsc -p tsconfig-build.json",
     "start": "node dist/index.js",
     "lint": "npx eslint .",
@@ -19,6 +21,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/express": "^4.17.13",
     "@types/jest": "^27.0.2",
     "@types/jsonwebtoken": "^8.5.5",
     "@types/module-alias": "^2.0.1",
@@ -41,8 +44,10 @@
   },
   "dependencies": {
     "axios": "^0.24.0",
+    "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "ts-node-dev": "^1.1.8"
   }
 }
