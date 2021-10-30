@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, getRepository } from 'typeorm'
-import { newDb } from 'pg-mem'
+import { Entity, PrimaryGeneratedColumn, Column, getRepository, Repository, getConnection } from 'typeorm'
+import { IBackup, newDb } from 'pg-mem'
 
 import { LoadUserAccountRepository } from '@/data/contracts/repository'
 
@@ -33,38 +33,42 @@ class PgUser {
 
 describe('PostgresUserAccountRepository', () => {
   describe('LoadUserAccountRepository', () => {
-    it('should return an account if email exists', async () => {
+    let sut: PostgresUserAccountRepository
+    let pgUserRepository: Repository<PgUser>
+    let backup: IBackup
+
+    beforeAll(async () => {
       const db = newDb()
       const connection = await db.adapters.createTypeormConnection({
         type: 'postgres',
         entities: [PgUser]
       })
       await connection.synchronize()
+      backup = db.backup()
+      pgUserRepository = getRepository(PgUser)
+    })
 
-      const pgUserRepository = getRepository(PgUser)
+    beforeEach(() => {
+      backup.restore()
+      sut = new PostgresUserAccountRepository()
+    })
+
+    afterAll(async () => {
+      await getConnection().close()
+    })
+
+    it('should return an account if email exists', async () => {
       await pgUserRepository.save({ email: 'existing@mail.com' })
-      const sut = new PostgresUserAccountRepository()
 
       const account = await sut.load({ email: 'existing@mail.com' })
 
       expect(account).toEqual({ id: '1' })
-      await connection.close()
     })
 
     it('should return undefined if email doenst exist', async () => {
-      const db = newDb()
-      const connection = await db.adapters.createTypeormConnection({
-        type: 'postgres',
-        entities: [PgUser]
-      })
-      await connection.synchronize()
-
-      const sut = new PostgresUserAccountRepository()
-
       const account = await sut.load({ email: 'new_email@mail.com' })
 
       expect(account).toBeUndefined()
-      connection.close()
     })
   })
 })
