@@ -6,26 +6,25 @@ import { PostgresUserAccountRepository } from '@/infra/postgres/repositories'
 import { makeFakeDb } from '../mocks'
 
 describe('PostgresUserAccountRepository', () => {
+  let sut: PostgresUserAccountRepository
+  let pgUserRepository: Repository<PgUser>
+  let backup: IBackup
+
+  beforeAll(async () => {
+    const db = await makeFakeDb()
+    backup = db.backup()
+    pgUserRepository = getRepository(PgUser)
+  })
+
+  beforeEach(() => {
+    backup.restore()
+    sut = new PostgresUserAccountRepository()
+  })
+
+  afterAll(async () => {
+    await getConnection().close()
+  })
   describe('LoadUserAccountRepository', () => {
-    let sut: PostgresUserAccountRepository
-    let pgUserRepository: Repository<PgUser>
-    let backup: IBackup
-
-    beforeAll(async () => {
-      const db = await makeFakeDb()
-      backup = db.backup()
-      pgUserRepository = getRepository(PgUser)
-    })
-
-    beforeEach(() => {
-      backup.restore()
-      sut = new PostgresUserAccountRepository()
-    })
-
-    afterAll(async () => {
-      await getConnection().close()
-    })
-
     it('should return an account if email exists', async () => {
       await pgUserRepository.save({ email: 'existing@mail.com' })
 
@@ -38,6 +37,18 @@ describe('PostgresUserAccountRepository', () => {
       const account = await sut.load({ email: 'new_email@mail.com' })
 
       expect(account).toBeUndefined()
+    })
+  })
+  describe('SaveFacebookAccountRepository', () => {
+    it('should create an account if id is not provided', async () => {
+      const newAccount = {
+        email: 'valid_mail@mail.com',
+        name: 'valid_name',
+        facebookId: 'valid_facebook_id'
+      }
+      await sut.saveWithFacebook(newAccount)
+      const account = await pgUserRepository.findOne({ email: newAccount.email })
+      expect(account?.id).toBe(1)
     })
   })
 })
