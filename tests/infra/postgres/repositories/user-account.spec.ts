@@ -46,9 +46,35 @@ describe('PostgresUserAccountRepository', () => {
         name: 'valid_name',
         facebookId: 'valid_facebook_id'
       }
+
       await sut.saveWithFacebook(newAccount)
       const account = await pgUserRepository.findOne({ email: newAccount.email })
+
       expect(account?.id).toBe(1)
+    })
+
+    it('should update an account if id already exists', async () => {
+      await pgUserRepository.save({
+        email: 'valid_mail@mail.com',
+        name: 'valid_name',
+        facebookId: 'valid_facebook_id'
+      })
+
+      const newAccount = {
+        id: '1',
+        email: 'new_mail@mail.com',
+        name: 'new_name',
+        facebookId: 'new_valid_facebook_id'
+      }
+      await sut.saveWithFacebook(newAccount)
+      const account = await pgUserRepository.findOne({ id: 1 })
+
+      expect(account).toEqual({
+        id: 1,
+        name: 'new_name',
+        facebook_id: 'new_valid_facebook_id',
+        email: 'valid_mail@mail.com'
+      })
     })
   })
 })
