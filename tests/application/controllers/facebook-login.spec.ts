@@ -20,10 +20,19 @@ class FacebookLoginController {
         data: new Error('Token field is required')
       }
     }
-    await this.facebookAuthentication.perform({ token: httpRequest.token })
-    return {
-      statusCode: 401,
-      data: new AuthenticationError()
+    const { result } = await this.facebookAuthentication.perform({ token: httpRequest.token })
+    if (result instanceof AccessToken) {
+      return {
+        statusCode: 200,
+        data: {
+          accessToken: result.value
+        }
+      }
+    } else {
+      return {
+        statusCode: 401,
+        data: new AuthenticationError()
+      }
     }
   }
 }
@@ -69,13 +78,23 @@ describe('FacebookLoginController', () => {
     expect(facebookAuth.perform).toHaveBeenCalledWith({ token: 'any_token' })
     expect(facebookAuth.perform).toHaveBeenCalledTimes(1)
   })
-  it('should return 401 authentication fails', async () => {
+  it('should return 401 when authentication fails', async () => {
     facebookAuth.perform.mockResolvedValueOnce({ result: new AuthenticationError() })
     const response = await sut.handle({ token: 'any_token' })
 
     expect(response).toEqual({
       statusCode: 401,
       data: new AuthenticationError()
+    })
+  })
+  it('should return 200 when authentication succeeds', async () => {
+    const response = await sut.handle({ token: 'any_token' })
+
+    expect(response).toEqual({
+      statusCode: 200,
+      data: {
+        accessToken: 'any_value'
+      }
     })
   })
 })
