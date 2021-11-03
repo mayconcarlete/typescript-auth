@@ -1,7 +1,6 @@
 import { FacebookAuthentication } from '@/domain/features'
-import { badRequest, HttpResponse } from '@/application/helpers'
+import { badRequest, HttpResponse, unauthorized } from '@/application/helpers'
 import { AccessToken } from '@/domain/models'
-import { AuthenticationError } from '@/domain/errors'
 import { RequiredFieldError, ServerError } from '@/application/errors'
 
 export class FacebookLoginController {
@@ -23,10 +22,7 @@ export class FacebookLoginController {
           }
         }
       } else {
-        return {
-          statusCode: 401,
-          data: new AuthenticationError()
-        }
+        return unauthorized()
       }
     } catch (error) {
       return {
