@@ -4,7 +4,7 @@ import { FacebookAuthentication } from '@/domain/features/'
 import { AuthenticationError } from '@/domain/errors'
 import { AccessToken } from '@/domain/models'
 import { FacebookLoginController } from '@/application/controllers'
-import { ServerError } from '@/application/errors'
+import { RequiredFieldError, ServerError } from '@/application/errors'
 
 describe('FacebookLoginController', () => {
   let sut: FacebookLoginController
@@ -22,7 +22,7 @@ describe('FacebookLoginController', () => {
 
     expect(response).toEqual({
       statusCode: 400,
-      data: new Error('Token field is required')
+      data: new RequiredFieldError('token')
     })
   })
   it('should return 400 if token is null', async () => {
@@ -30,7 +30,7 @@ describe('FacebookLoginController', () => {
 
     expect(response).toEqual({
       statusCode: 400,
-      data: new Error('Token field is required')
+      data: new RequiredFieldError('token')
     })
   })
   it('should return 400 if token is undefined', async () => {
@@ -38,7 +38,7 @@ describe('FacebookLoginController', () => {
 
     expect(response).toEqual({
       statusCode: 400,
-      data: new Error('Token field is required')
+      data: new RequiredFieldError('token')
     })
   })
   it('should call FacebookAuthentication with correct params', async () => {
