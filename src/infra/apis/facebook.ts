@@ -35,14 +35,15 @@ export class FacebookApi implements LoadFacebookUserApi {
   }
 
   private async getAppToken (): Promise<AppToken> {
-    return this.httpClient.get({
-      url: `${this.baseUrl}/oauth/access_token/`,
+    const appToken = await this.httpClient.get({
+      url: `${this.baseUrl}/oauth/access_token`,
       params: {
         client_id: this.clientId,
         client_secret: this.clientSecret,
-        grand_type: 'client_credentials'
+        grant_type: 'client_credentials'
       }
     })
+    return appToken
   }
 
   private async getDebugToken (clientToken: string): Promise<DebugToken> {
