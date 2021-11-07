@@ -70,10 +70,19 @@ describe('FacebookApi', () => {
 
   it('should return facebook user', async () => {
     const facebookUserInfo = await sut.loadUser({ token: 'any_client_token' })
+
     expect(facebookUserInfo).toEqual({
       email: 'valid_facebook_mail@mail.com',
       facebookId: 'valid_facebook_id',
       name: 'valid_facebook_name'
     })
+  })
+
+  it('should return undefined if HttpClientGet throws', async () => {
+    httpClient.get.mockReset().mockRejectedValueOnce(new Error('FacebookError'))
+
+    const facebookUserInfo = await sut.loadUser({ token: 'any_client_token' })
+
+    expect(facebookUserInfo).toBeUndefined()
   })
 })
