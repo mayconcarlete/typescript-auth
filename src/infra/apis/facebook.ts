@@ -26,11 +26,15 @@ export class FacebookApi implements LoadFacebookUserApi {
   ) {}
 
   async loadUser (params: LoadFacebookUserApi.Params): Promise<LoadFacebookUserApi.Result> {
-    const facebookUserInfo = await this.getUserInfo(params.token)
-    return {
-      name: facebookUserInfo.name,
-      email: facebookUserInfo.email,
-      facebookId: facebookUserInfo.id
+    try {
+      const facebookUserInfo = await this.getUserInfo(params.token)
+      return {
+        name: facebookUserInfo.name,
+        email: facebookUserInfo.email,
+        facebookId: facebookUserInfo.id
+      }
+    } catch (e) {
+      return undefined
     }
   }
 
