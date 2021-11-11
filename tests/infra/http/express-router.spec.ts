@@ -51,6 +51,7 @@ describe('ExpressRouter', () => {
 
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({ data: 'any_data' })
+    expect(res.status).toHaveBeenCalledTimes(1)
     expect(controller.handle).toHaveBeenCalledTimes(1)
   })
 })
