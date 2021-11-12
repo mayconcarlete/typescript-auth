@@ -1,4 +1,5 @@
 import { app } from '@/main/config/app'
+import { UnauthorizedError } from '@/application/errors'
 
 import { IBackup } from 'pg-mem'
 import { getConnection } from 'typeorm'
@@ -37,6 +38,15 @@ describe('Login Routes', () => {
 
       expect(status).toBe(200)
       expect(body.accessToken).toBeDefined()
+    })
+
+    it('should return 401 with UnauthorizedError', async () => {
+      const { status, body } = await request(app)
+        .post('/api/v1/login/facebook')
+        .send({ token: 'invalid_token' })
+
+      expect(status).toBe(401)
+      expect(body.error).toBe(new UnauthorizedError().message)
     })
   })
 })
