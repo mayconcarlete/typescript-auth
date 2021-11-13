@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn src/main/index.ts",
     "build": "rimraf dist && npx tsc -p tsconfig-build.json",
-    "start": "node dist/src/main/index.js",
+    "start": "npm run build && node dist/src/main/index.js",
     "lint": "npx eslint .",
     "lint:fix": "npm run lint -- --fix",
     "test": "jest --passWithNoTests --no-cache --runInBand",
