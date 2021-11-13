@@ -3,9 +3,9 @@ import { getConnection } from 'typeorm'
 import request from 'supertest'
 
 import { app } from '@/main/config/app'
-import { UnauthorizedError } from '@/application/errors'
 import { PgUser } from '@/infra/postgres/entities'
 import { makeFakeDb } from '@/tests/infra/postgres/mocks'
+import { UnauthorizedError } from '@/application/errors'
 
 describe('Login Routes', () => {
   describe('POST /login/facebook', () => {
@@ -31,7 +31,6 @@ describe('Login Routes', () => {
 
     it('should return 200 with AccessToken', async () => {
       loadUserSpy.mockResolvedValueOnce({ facebookId: 'any_id', name: 'any_name', email: 'any_email' })
-
       const { status, body } = await request(app)
         .post('/api/v1/login/facebook')
         .send({ token: 'valid_token' })

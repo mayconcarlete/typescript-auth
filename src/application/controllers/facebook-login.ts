@@ -21,6 +21,7 @@ export class FacebookLoginController extends Controller {
 
   async perform ({ token }: HttpRequest): Promise<HttpResponse<Model>> {
     const { result } = await this.facebookAuthentication.perform({ token })
+    console.log('Entrei aqui')
     return result instanceof AccessToken
       ? ok({ accessToken: result.value })
       : unauthorized()
