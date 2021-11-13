@@ -24,7 +24,7 @@ export class PostgresUserAccountRepository implements LoadUserAccountRepository,
     const pgUserRepository = getRepository(PgUser)
     let resultId: string
     if (id === undefined) {
-      const account = await pgUserRepository.save({ email, facebookId, name })
+      const account = await pgUserRepository.save({ email, facebook_id: facebookId, name })
       resultId = account.id.toString()
       return { id: resultId }
     } else {
