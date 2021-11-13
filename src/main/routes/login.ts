@@ -1,6 +1,6 @@
-import { adaptExpressRoute } from '@/infra/http'
+import { adaptExpressRoute } from '../../infra/http'
 import { Router } from 'express'
-import { makeFacebookLoginController } from '../factories/controllers'
+import { makeFacebookLoginController } from '../factories/controllers/facebook-login'
 
 export default (router: Router): void => {
   const controller = makeFacebookLoginController()
