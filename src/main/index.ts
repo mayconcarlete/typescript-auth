@@ -4,7 +4,7 @@ import 'reflect-metadata'
 import env from './config/env'
 import { app } from './config/app'
 import { createConnection } from 'typeorm'
-import { config } from '../infra/postgres/helpers/config'
+import { config } from '@/infra/postgres/helpers/config'
 
 createConnection(config)
   .then(() => {
