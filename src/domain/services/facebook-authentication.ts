@@ -3,7 +3,7 @@ import { SaveFacebookAccountRepository, LoadUserAccountRepository } from '@/doma
 import { TokenGenerator } from '@/domain/contracts/crypto'
 import { AuthenticationError } from '@/domain/errors'
 import { FacebookAuthentication } from '@/domain/features'
-import { AccessToken, FacebookAccount } from '@/domain/models'
+import { AccessToken, FacebookAccount } from '@/domain/entities'
 
 type Params = FacebookAuthentication.Params
 type Result = FacebookAuthentication.Result

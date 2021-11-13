@@ -1,6 +1,6 @@
 import { FacebookAuthentication } from '@/domain/features'
 import { HttpResponse, ok, unauthorized } from '@/application/helpers'
-import { AccessToken } from '@/domain/models'
+import { AccessToken } from '@/domain/entities'
 import { ValidationBuilder, Validator } from '@/application/validation'
 import { Controller } from '@/application/controllers'
 
@@ -21,7 +21,6 @@ export class FacebookLoginController extends Controller {
 
   async perform ({ token }: HttpRequest): Promise<HttpResponse<Model>> {
     const { result } = await this.facebookAuthentication.perform({ token })
-    console.log('Entrei aqui')
     return result instanceof AccessToken
       ? ok({ accessToken: result.value })
       : unauthorized()
