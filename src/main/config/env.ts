@@ -1,4 +1,5 @@
 export default {
+  environment: process.env.ENVIRONMENT ?? 'development',
   appPort: process.env.PORT ?? 3000,
   facebookApi: {
     clientId: process.env.FB_CLIENT_ID ?? '3123828511234482',

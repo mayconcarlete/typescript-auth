@@ -1,4 +1,9 @@
 import { addAlias } from 'module-alias'
 import { resolve } from 'path'
+import envFile from './env'
 
-addAlias('@', resolve('dist/src'))
+if (envFile.environment === 'production') {
+  addAlias('@', resolve('dist/src'))
+} else {
+  addAlias('@', resolve('src'))
+}
