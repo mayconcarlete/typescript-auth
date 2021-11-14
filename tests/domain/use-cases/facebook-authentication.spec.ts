@@ -47,12 +47,10 @@ describe('FacebookAuthentication', () => {
     expect(facebookApi.loadUser).toHaveBeenCalledTimes(1)
   })
 
-  it('should return AuthenticationError when facebookApi.loadUser return undefined', async () => {
+  it('should throw AuthenticationError when facebookApi.loadUser return undefined', async () => {
     facebookApi.loadUser.mockResolvedValueOnce(undefined)
 
-    const authResult = await sut({ token })
-
-    expect(authResult).toEqual({ result: new AuthenticationError() })
+    await expect(sut({ token })).rejects.toThrow(new AuthenticationError())
   })
 
   it('should call userAccountRepository.load when facebookApi.loadUser returns data', async () => {
@@ -82,7 +80,7 @@ describe('FacebookAuthentication', () => {
   it('should return an access token on success', async () => {
     const authResult = await sut({ token })
 
-    expect(authResult).toEqual({ result: new AccessToken('any_generated_token') })
+    expect(authResult).toEqual({ token: 'any_generated_token' })
   })
 
   it('should rethrow if LoadFacebookUserApi throws', async () => {
