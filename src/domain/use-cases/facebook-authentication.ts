@@ -5,11 +5,11 @@ import { AuthenticationError } from '@/domain/errors'
 import { AccessToken, FacebookAccount } from '@/domain/entities'
 
 type Setup = (facebookApi: LoadFacebookUserApi, userAccountRepository: LoadUserAccountRepository & SaveFacebookAccountRepository, crypto: TokenGenerator) => FacebookAuthentication
-type Params = {token: string}
-type Result = {token: string }
-export type FacebookAuthentication = (params: Params) => Promise<Result>
+type Input = {token: string}
+type Output = {token: string }
+export type FacebookAuthentication = (params: Input) => Promise<Output>
 
-export const setupFacebookAuthentication: Setup = (facebookApi, userAccountRepository, crypto) => async ({ token }): Promise<Result> => {
+export const setupFacebookAuthentication: Setup = (facebookApi, userAccountRepository, crypto) => async ({ token }): Promise<Output> => {
   const facebookData = await facebookApi.loadUser({ token })
   if (facebookData !== undefined) {
     const accountData = await userAccountRepository.load({ email: facebookData.email })
