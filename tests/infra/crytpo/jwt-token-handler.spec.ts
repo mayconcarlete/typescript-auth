@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken'
 
-import { JwtTokenGenerator } from '@/infra/crypto'
+import { JwtTokenHandler } from '@/infra/crypto'
 
 jest.mock('jsonwebtoken')
 
-describe('JwtTokenGenerator', () => {
+describe('JwtTokenHandler', () => {
   let fakeJwt: jest.Mocked<typeof jwt>
-  let sut: JwtTokenGenerator
+  let sut: JwtTokenHandler
 
   beforeAll(() => {
     fakeJwt = jwt as jest.Mocked<typeof jwt>
@@ -14,7 +14,7 @@ describe('JwtTokenGenerator', () => {
   })
 
   beforeEach(() => {
-    sut = new JwtTokenGenerator('any_secret')
+    sut = new JwtTokenHandler('any_secret')
   })
 
   it('should call sign with correct params', async () => {
