@@ -54,15 +54,25 @@ describe('JwtTokenHandler', () => {
 
   describe('JwtTokenHandler.validateToken', () => {
     let token: string
+    let key: string
 
     beforeAll(() => {
       token = 'any_token'
+      key = 'any_key'
       fakeJwt.sign.mockImplementation(() => token)
+      fakeJwt.verify.mockImplementation(() => ({
+        key
+      }))
     })
     it('should call sign with correct params', async () => {
       await sut.validateToken({ token })
 
       expect(fakeJwt.verify).toHaveBeenCalledWith(token, secret)
+    })
+
+    it('should return the key used to sign', async () => {
+      const generatedKey = await sut.validateToken({ token })
+      expect(generatedKey).toBe(key)
     })
   })
 })
